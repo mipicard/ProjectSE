@@ -24,19 +24,37 @@ public class DynamicGroup<T>{
 	public void associate(T element1, T element2) {
 		int index_1 = this.getIndex(element1),
 			index_2 = this.getIndex(element2);
-		Collection<T> newgroup = this.groups.remove(index_1);
-		newgroup.addAll(this.groups.remove(index_2));
-		this.groups.add(newgroup);
+		if (index_1 > index_2) {
+			Collection<T> newgroup = this.groups.remove(index_1);
+			// addAll not implemented for set...
+			for(T e : this.groups.remove(index_2)) {
+				 newgroup.add(e);
+			}
+			this.groups.add(newgroup);
+		} else if (index_1 < index_2) {
+			Collection<T> newgroup = this.groups.remove(index_2);
+			// addAll not implemented for set...
+			for(T e : this.groups.remove(index_1)) {
+				 newgroup.add(e);
+			}
+			this.groups.add(newgroup);
+		}
+		// We don't change group if 2 T are from the same group.
 	}
 	
 	private int getIndex(T element) {
 		int index=0;
-		for(;index<this.groups.size(); ++index) {
-			if(this.groups.get(index).contains(element)) {
-				break;
-			}
+		while(index<this.groups.size() && !this.contains(this.groups.get(index), element)) {
+			++ index;
 		}
 		if(index >= this.groups.size()) throw new IllegalArgumentException("Argument not found in the DynamicGroup instance.");
 		return index;
 	}
+	
+	private boolean contains(Collection<T> collection, T element) {
+		// Contains don't seem to work, so...
+		for(T c : collection) {if(c.equals(element)) return true;}
+		return false;
+	}
+
 }

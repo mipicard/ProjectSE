@@ -5,8 +5,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 
@@ -15,20 +17,24 @@ import javax.imageio.ImageIO;
  * @author mpicard
  */
 public class BooleanImage {
-	public boolean [][] image;
-	public int width, height;
+	private int width, height;
+	private Collection<Coordinate> pixels;
+	private List<Collection<Coordinate>> groups;
+	private Map<Integer, Integer> associationWithNextFrame;
 	
 	private BooleanImage(boolean[][] image, int width, int height) {
-		this.image = image;
 		this.width = width;
 		this.height = height;
+		this.pixels = this.collectionOfTruePixel(image);
+		this.groups = null;
+		this.associationWithNextFrame = new HashMap<>();
 	}
 	
-	public Collection<Coordinate> collectionOfTruePixel(){
+	private Collection<Coordinate> collectionOfTruePixel(boolean[][] image){
 		Collection<Coordinate> retour = new LinkedList<>();
 		for(int x=0; x<this.width; ++x) {
 			for(int y=0; y<this.height; ++y) {
-				if(this.image[x][y]) {
+				if(image[x][y]) {
 					retour.add(new Coordinate(x, y));
 				}
 			}
@@ -36,15 +42,38 @@ public class BooleanImage {
 		return retour;
 	}
 	
-	public void setPixel(Coordinate c, boolean value) {
-		this.image[c.x][c.y] = value;
+	public Collection<Coordinate> getPixels(){
+		return this.pixels;
 	}
 	
-	public void setCollectionPixel(Collection<Coordinate> lc, boolean value) {
-		for(Coordinate c : lc) {
-			this.setPixel(c, value);
-		}
+	public int getWidth() {
+		return this.width;
 	}
+	
+	public int getHeight() {
+		return this.height;
+	}
+	
+	public void setGroupsAndRemovePixels(List<Collection<Coordinate>> groups) {
+		this.groups = groups;
+		this.pixels = null;
+	}
+	
+	public List<Collection<Coordinate>> getGroup(){
+		return this.groups;
+	}
+	
+	public void setAssociationGroup(int origin, int next) {
+		if(this.getGroup() != null)
+			this.associationWithNextFrame.put(Integer.valueOf(origin), Integer.valueOf(next));
+	}
+	
+	
+	
+	
+	
+	
+	
 	
 	static public BooleanImage readFromBmpFile(String file) throws IOException {
 		BufferedImage bmp = ImageIO.read(new File(file));
