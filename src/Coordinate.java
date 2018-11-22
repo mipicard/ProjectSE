@@ -44,4 +44,8 @@ public class Coordinate {
 		
 		return neighboors;
 	}
+	
+	public int manhattanDistance(Coordinate c) {
+		return Math.abs(this.x - c.x) + Math.abs(this.y - c.y);
+	}
 }
