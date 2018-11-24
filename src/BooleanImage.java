@@ -70,7 +70,7 @@ public class BooleanImage {
 		return new LinkedList<>(this.groups);
 	}
 	
-	public void setAssociationGroup(int origin, int next) {
+	public void putAssociationGroup(int origin, int next) {
 		if(this.getGroupCopy() != null)
 			this.associationWithNextFrame.put(Integer.valueOf(origin), Integer.valueOf(next));
 	}
@@ -97,7 +97,6 @@ public class BooleanImage {
 				}
 			}
 		}
-		// TODO
 		ImageIO.write(image, "BMP", new File(directory+"/"+this.getName()));
 	}
 	

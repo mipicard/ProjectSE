@@ -4,7 +4,8 @@ import cv2
 import os
 import argparse
 
-
+# This class goal is to display a windows to determine threshold and return it
+# for further use.
 class CannyDetector:
     def __init__(self, windows, image_src):
         self._min_threshold = 0
@@ -12,7 +13,8 @@ class CannyDetector:
         self._windows = windows
         self._img_src = image_src
         self._img = cv2.blur(cv2.cvtColor(image_src, cv2.COLOR_BGR2GRAY), (3,3))
-
+	
+	# Display the window
     def display(self):
         edge = cv2.Canny(self._img, self._min_threshold, self._max_threshold, 3)
         mask = edge != 0
@@ -64,19 +66,19 @@ def number_of_file(directory):
 def run_canny_detection(image):
     windows = 'Edge detector - hit enter to end'
     canny_detector = CannyDetector(windows, image)
-    cv2.namedWindow(windows, 0)
+    cv2.namedWindow(windows, 0)  # Create a windows
     cv2.resizeWindow(windows, 1000, 1000)
-    cv2.createTrackbar('Min Threshold', windows, 0, 500, canny_detector.update_min_threshold)
-    cv2.createTrackbar('Max Threshold', windows, 200, 500, canny_detector.update_max_threshold)
-    canny_detector.display()
-    cv2.waitKey()
+    cv2.createTrackbar('Min Threshold', windows, 0, 500, canny_detector.update_min_threshold)  # Add some trackbar
+    cv2.createTrackbar('Max Threshold', windows, 200, 500, canny_detector.update_max_threshold)  # Add some trackbar
+    canny_detector.display() # Display the windows
+    cv2.waitKey() # Wait for one keyboard key to be pressed
     return canny_detector
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description='Code for Canny Edge Detector tutorial.')
-    parser.add_argument('input', help='Path to input image.')
+    parser.add_argument('input', help='Path to input directory.')
     args = parser.parse_args()
 
     n_file = number_of_file(args.input)
@@ -98,6 +100,7 @@ if __name__ == "__main__":
         output_directory,
         exist_ok=False
     )
+    # Read, convert and output all frame from 1 to the number of them.
     for i in [n + 1 for n in range(n_file)]:
         canny_writer(
             os.path.join(

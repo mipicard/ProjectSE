@@ -150,7 +150,7 @@ public class Main {
 			while(index_group1<groupFrame1.size() && 0<groupFrame2.size()) {
 				List<Collection<Coordinate>> association = possibleGroupAssociationManhattan(groupFrame1.get(index_group1), groupFrame2);
 				if(association.size()==1) {
-					frame1.setAssociationGroup(frame1.getIndexGroup(groupFrame1.get(index_group1)), frame2.getIndexGroup(association.get(0)));
+					frame1.putAssociationGroup(frame1.getIndexGroup(groupFrame1.get(index_group1)), frame2.getIndexGroup(association.get(0)));
 					groupFrame1.remove(index_group1);
 					groupFrame2.remove(association.get(0));
 				}else {

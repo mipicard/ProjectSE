@@ -33,9 +33,16 @@ unexpected behaviour for next step.
 - `CannyConverter.py <directory_with_frames>` perform step 2 and then step 3 by
 creating another directory with the same name with "_canny" at the end, 
 alongside the given one.
-- `java src.Main <directory_with_edges_frames>` perform step 4 and all substeps.
-It's java bytecode, stored in the bin directory, compile from the corresponding
-java source file in the src folder. It will output another directory, alongside
-the given one, with the same name with "_export" at the end.
+- `java src.Main <directory_with_edges_frames> <output_directory>` perform step
+4 and all substeps. It's java bytecode, stored in the bin directory, compile 
+from the corresponding java source file in the src folder. It will create the
+output directory, it's mandatory that this directory doesn't exist beforehand.
 - `createVideo.sh <directory_with_exported_frames> <fps> <output_video_name>`
 perform step 5.
+
+Also, you can note that this project use bash script, python script and java
+bytecode together : this is due to the use of ffmpeg, opencv from which we have
+found first working occurence in python (and it's a bit easier to use it in 
+python rather than java), and java is use because it's mandatory. All code 
+should have a minimum of commentary to explain it's goal or it should are 
+self-explained or explain by the subject.
