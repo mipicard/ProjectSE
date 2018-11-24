@@ -9,11 +9,12 @@ done
 DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null && pwd )"
 
 cd $DIR
-EXPORTDIR=${$1::-3}
+V=$1
+EXPORTDIR=${V/%????/}
 mkdir $EXPORTDIR
 src/extractFrame.sh $1 $EXPORTDIR $2
 src/CannyConverter.py $EXPORTDIR
 cd bin
-java src.Main ${EXPORTDIR}/.. ${EXPORTDIR}_export
+java src.Main ../${EXPORTDIR}_canny ../${EXPORTDIR}_export
 cd ..
 src/createVideo.sh ${EXPORTDIR}_export $2 ${EXPORTDIR}_movement.mp4

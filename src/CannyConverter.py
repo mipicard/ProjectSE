@@ -1,8 +1,10 @@
 #!/usr/bin/python3
 
 import cv2
+import math
 import os
 import argparse
+
 
 # This class goal is to display a windows to determine threshold and return it
 # for further use.
@@ -13,8 +15,8 @@ class CannyDetector:
         self._windows = windows
         self._img_src = image_src
         self._img = cv2.blur(cv2.cvtColor(image_src, cv2.COLOR_BGR2GRAY), (3,3))
-	
-	# Display the window
+
+    # Display the window
     def display(self):
         edge = cv2.Canny(self._img, self._min_threshold, self._max_threshold, 3)
         mask = edge != 0
@@ -38,21 +40,17 @@ class CannyDetector:
 # Convert the source image to an edgy image, save in output, using threshold
 def canny_writer(source, threshold_min, threshold_max, output):
     image = cv2.imread(source)
-    edge_image = cv2.Canny(image, threshold_min, threshold_max)
+    edge_image = cv2.Canny(image, threshold_min, threshold_max, 3)
     cv2.imwrite(output, edge_image)
 
 
-# Convert a number to 4digit string
-def convert_number_to_string(number):
-    if number >= 10000:
-        raise ValueError(str(number) + " value over 9999.")
+# Convert a number to <length>digit string
+def convert_number_to_string(number, length):
+    digit_length = int(math.pow(10, length-1))
     ret = ""
-    if number < 1000:
+    while digit_length > number:
         ret += "0"
-    if number < 100:
-        ret += "0"
-    if number < 10:
-        ret += "0"
+        digit_length = int(digit_length/10)
     return ret + str(number)
 
 
@@ -82,10 +80,12 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     n_file = number_of_file(args.input)
+    if n_file >= 10000:
+        raise ValueError("Too much frame to compute.")
 
     path_image = "{}/frame{}.jpg".format(
         args.input,
-        convert_number_to_string(int(n_file/2)))
+        convert_number_to_string(int(n_file/2), 4))
     image = cv2.imread(path_image)
     if image is None:
         print('Could not open or find the image: ', path_image)
@@ -105,12 +105,12 @@ if __name__ == "__main__":
         canny_writer(
             os.path.join(
                 args.input,
-                "frame{}.jpg".format(convert_number_to_string(i))
+                "frame{}.jpg".format(convert_number_to_string(i, 4))
             ),
             min_threshold,
             max_threshold,
             os.path.join(
                 output_directory,
-                "frame{}.bmp".format(convert_number_to_string(i))
+                "frame{}.bmp".format(convert_number_to_string(i, 4))
             )
         )
